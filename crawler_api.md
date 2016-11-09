@@ -3,7 +3,7 @@
 
 ## [api/xmly/topn](#xmly_topn)
 
-<p id="xmly_topn">爬取喜马拉雅网站的topn</p>
+<p id="xmly_topn">告知爬虫爬取喜马拉雅网站的topn</p>
 
 api/xmly/topn
 
@@ -27,5 +27,17 @@ GET
 
 **JSON示例**
 
+```javascript  
+{
+    name:'xmly_topn',
+    description:"Not started",
+    // description: 'pid 6343, uptime 5 days, 7:02:05',
+    start:0,
+    stop:0,
+    now:1200361812,
+    state:20,
+    statename:'RUNNING'
+}
+```
 
 

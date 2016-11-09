@@ -73,6 +73,18 @@ MongoClient.connect(conf.mongo.uri, function (err,db) {
     }
 });
 
+var xmly_topn =
+{
+    name:'xmly_topn',
+    description:"Not started",
+    // description: 'pid 6343, uptime 5 days, 7:02:05',
+    start:0,
+    stop:0,
+    now:1200361812,
+    state:20,
+    statename:'RUNNING'
+};
+
 
 /**
  * Normalize a port into a number, string, or false.
