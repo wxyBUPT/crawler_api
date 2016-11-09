@@ -27,7 +27,7 @@ GET
 
 **JSON示例**
 
-```javascript  
+```javascript
 {
     name:'xmly_topn',
     description:"Not started",
@@ -39,5 +39,18 @@ GET
     statename:'RUNNING'
 }
 ```
+
+### 触发服务器执行一次xmly topn 的爬取,如果服务器正在爬取则失败
+
+#### http请求方式
+
+POST
+
+#### 请求参数
+
+| 参数名 | 类型及范围 | 说明|
+| --- | ---| ---|
+| topn_n | int(1~100) | topn_n n的数目, 爬虫目前设计只支持 1 ~ 100 的爬取|
+| urls | list | xmly 需要爬取栏目的url列表,如果为空,则全部爬取|
 
 
