@@ -1,0 +1,135 @@
+#!/usr/bin/env node
+
+/**
+ * Module dependencies.
+ */
+
+var app = require('../app');
+var debug = require('debug')('crawler-api:server');
+var http = require('http');
+var express = require('express');
+
+var conf = require('../config')(),
+    MongoClient = require('mongodb').MongoClient,
+    redis = require('redis'),
+    supervisord = require('supervisord');
+
+
+/**
+ * Get port from environment and store in Express.
+ */
+
+var port = normalizePort(conf.port || process.env.PORT || '3000');
+app.set('port', port);
+
+/**
+ * Create HTTP server.
+ * 创建server 的之前需要连接mongo,连接redis,创建supervisor client
+ * 通过回调方式实现顺序执行,代码可能会比较乱
+ */
+
+var server;
+
+// 连接mongo
+MongoClient.connect(conf.mongo.uri, function (err,db) {
+    if(err){
+        console.log('Sorry, there is no mongo db server runnint.');
+    }else {
+        // 创建到redis 的连接
+        var RdsClient = redis.createClient({host:conf.redis.host,port:conf.redis.port});
+        var SupClient = supervisord.connect(conf.supervisor.uri);
+        RdsClient.on("ready", function (res) {
+            console.log(app.locals);
+            var attachDB = function (req,res,next) {
+                req.db = db;
+                next();
+            };
+            var attachRds = function (req,res,next) {
+                req.rds = RdsClient;
+                next();
+            };
+            var attachSup = function (req,res,next) {
+                req.sup = SupClient;
+                next();
+            };
+            app.all('/api/*',attachDB,attachRds,attachSup);
+
+
+            server = http.createServer(app);
+            server.listen(port, function () {
+                console.log(
+                    'Successfully connected to mongodb:// ' + conf.mongo.host + ":" + conf.mongo.port
+                );
+                console.log(
+                    'Successfully create htt server, port is : ' + port
+                );
+            });
+            /**
+             * Listetn on provided port, on all network interfaces
+             */
+            server.on('error', onError);
+            server.on('listening', onListening);
+        });
+    }
+});
+
+
+/**
+ * Normalize a port into a number, string, or false.
+ */
+
+function normalizePort(val) {
+  var port = parseInt(val, 10);
+
+  if (isNaN(port)) {
+    // named pipe
+    return val;
+  }
+
+  if (port >= 0) {
+    // port number
+    return port;
+  }
+
+  return false;
+}
+
+/**
+ * Event listener for HTTP server "error" event.
+ */
+
+function onError(error) {
+  if (error.syscall !== 'listen') {
+    throw error;
+  }
+
+  var bind = typeof port === 'string'
+    ? 'Pipe ' + port
+    : 'Port ' + port;
+
+  // handle specific listen errors with friendly messages
+  switch (error.code) {
+    case 'EACCES':
+      console.error(bind + ' requires elevated privileges');
+      process.exit(1);
+      break;
+    case 'EADDRINUSE':
+      console.error(bind + ' is already in use');
+      process.exit(1);
+      break;
+    default:
+      throw error;
+  }
+}
+
+/**
+ * Event listener for HTTP server "listening" event.
+ */
+
+function onListening() {
+  var addr = server.address();
+  var bind = typeof addr === 'string'
+    ? 'pipe ' + addr
+    : 'port ' + addr.port;
+  debug('Listening on ' + bind);
+}
