@@ -164,31 +164,41 @@ router.route('/xmly/topn')
     )
     .post(
         function (req,res,next) {
-            var urls = req.body.urls;
-            var top_n = req.body.topn_n;
-            if(!top_n){
-                var err = new Error("Body must contains topn_n parm");
-                next(err);
-            }
+            rpc.getProcessInfo(name, function (err,result) {
+                // 如果当前进程正在执行
+                if (result.state == 20) {
+                    var tmp = {
+                        status: "fail",
+                        reason: "stillrunning"
+                    };
+                    res.jsonp(tmp);
+                }
+                var urls = req.body.urls;
+                var top_n = req.body.topn_n;
+                if (!top_n) {
+                    var err = new Error("Body must contains topn_n parm");
+                    next(err);
+                }
 
-            if(urls.length!=0){
-                var err = new Error("当前版本不支持指定urls 爬取");
-                next(err);
-            }
-            rds.set(conf.xmly.topn_n_key,top_n);
-            var dNow = new Date();
-            var s = '_' + dNow.getFullYear() + dNow.getMonth() +  + dNow.getDate() +  dNow.getHours() +  dNow.getMinutes();
-            rds.set(conf.xmly.topn_table,'xmly_top' + top_n +   s);
-            rpc.startProcess(conf.supervisor.xmly_topn,true, function (err,result) {
-                rpc.getProcessInfo(conf.supervisor.xmly_topn, function (err,result){
-                    result.name = "xmly_topn";
-                    delete result.logfile;
-                    delete result.stderr_logfile;
-                    delete result.group;
-                    delete result.stdout_logfile;
-                    delete result.pid;
-                    delete result.spawnerr;
-                    res.jsonp(result);
+                if (urls.length != 0) {
+                    var err = new Error("当前版本不支持指定urls 爬取");
+                    next(err);
+                }
+                rds.set(conf.xmly.topn_n_key, top_n);
+                var dNow = new Date();
+                var s = '_' + dNow.getFullYear() + dNow.getMonth() + +dNow.getDate() + dNow.getHours() + dNow.getMinutes();
+                rds.set(conf.xmly.topn_table, 'xmly_top' + top_n + s);
+                rpc.startProcess(conf.supervisor.xmly_topn, true, function (err, result) {
+                    rpc.getProcessInfo(conf.supervisor.xmly_topn, function (err, result) {
+                        result.name = "xmly_topn";
+                        delete result.logfile;
+                        delete result.stderr_logfile;
+                        delete result.group;
+                        delete result.stdout_logfile;
+                        delete result.pid;
+                        delete result.spawnerr;
+                        res.jsonp(result);
+                    });
                 });
             });
         }
@@ -210,21 +220,31 @@ router.route('/qt/topn')
     .get(getProcessStatusByName(conf.supervisor.qt_topn))
     .post(
         function (req,res,next) {
-            var topn_n = req.body.topn_n;
-            if(!topn_n){
-                var err = new Error("Body must contains topn_n parm");
-                next(err);
-            }
-            rpc.startProcess(conf.supervisor.qt_topn,true, function (err,result) {
-                rpc.getProcessInfo(conf.supervisor.qt_topn, function (err,result){
-                    result.name = "xmly_topn";
-                    delete result.logfile;
-                    delete result.stderr_logfile;
-                    delete result.group;
-                    delete result.stdout_logfile;
-                    delete result.pid;
-                    delete result.spawnerr;
-                    res.jsonp(result);
+            rpc.getProcessInfo(name, function (err,result) {
+                // 如果当前进程正在执行
+                if (result.state == 20) {
+                    var tmp = {
+                        status: "fail",
+                        reason: "stillrunning"
+                    };
+                    res.jsonp(tmp);
+                }
+                var topn_n = req.body.topn_n;
+                if (!topn_n) {
+                    var err = new Error("Body must contains topn_n parm");
+                    next(err);
+                }
+                rpc.startProcess(conf.supervisor.qt_topn, true, function (err, result) {
+                    rpc.getProcessInfo(conf.supervisor.qt_topn, function (err, result) {
+                        result.name = "xmly_topn";
+                        delete result.logfile;
+                        delete result.stderr_logfile;
+                        delete result.group;
+                        delete result.stdout_logfile;
+                        delete result.pid;
+                        delete result.spawnerr;
+                        res.jsonp(result);
+                    });
                 });
             });
         }
