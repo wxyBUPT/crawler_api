@@ -26,10 +26,24 @@ var config = {
         mode:'local',
         port:3000,
         supervisor:{
-            uri:'http://user:123@114.112.103.33:9001'
+            uri:'http://user:123@114.112.103.33:9001',
+            // supervisor中xmly topn 的名称
+            xmly_topn:"xmly_topn",
+            kl_topn:"kl_topn",
+            kl_full:"kl",
+            xmly_full:"xmly",
+            qt_topn:"qt_topn",
+            qt_full:"qt",
+            // 所有的增量爬取的实现逻辑都是全量爬取
+            qt_increment:'qt',
+            xmly_increment:'xmly',
+            kl_increment:'kl',
+            xmly_audio:"xmly_audio",
+            qt_audio:"qt_audio",
+            kl_audio:"kl_audio"
         },
         redis:{
-            host:'10.109.247.29',
+            host:'114.112.103.33',
             port:6379,
         },
         xmly:{
@@ -42,6 +56,9 @@ var config = {
             album_table : "xmly_album",
             category_table: "xmly_category"
         },
+        kl:{
+
+        },
         // uri 的配置和host port db 配置需要保持一致
         mongo:{
             host:'114.112.103.33',
@@ -51,6 +68,7 @@ var config = {
         }
     },
 
+    /**
     staging:{
         mode:'staging',
         port:4000,
@@ -96,6 +114,7 @@ var config = {
         port:'9001',
         path:'/RPC2'
     },
+     **/
 
 };
 

@@ -14,6 +14,9 @@ client.on("error", function (err) {
 });
 
 client.on("ready", function () {
-    console.log("ready");
+    console.log("Redis connect succeed");
 });
 
+exports.getRds = function () {
+    return client;
+};

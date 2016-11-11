@@ -9,21 +9,37 @@ var supervisord = require('supervisord');
 var conf = require('./config')();
 
 
-var client = supervisord.connect(conf.supervisor.api);
+var client = supervisord.connect(conf.supervisor.api, function (err,res) {
+    if(err){
+        console.log("Connected to supervisor fail");
+    }else {
+        console.log("Connected to supervisor succeed");
+    }
+});
 
-var connect = function () {
+/**
+client.on("ready", function () {
+    console.log("Connected to supervisor succeed");
+});
+ **/
+
+exports.get = function () {
+    return client;
 };
 
-connect();
 
 var Supervisor = function () {
+
 };
+
+
+
 
 Supervisor.prototype.sayhello = function () {
     client.getAllProcessInfo(function(err, result)
     {
 
-        /*
+        /**
          [ { description: 'pid 22083, uptime 0:10:36',
          pid: 22083,
          stderr_logfile: '/tmp/test-stderr---supervisor-G27SFc.log',
@@ -38,7 +54,7 @@ Supervisor.prototype.sayhello = function () {
          start: 1316236819,
          state: 20,
          stdout_logfile: '/tmp/test-stdout---supervisor-izrtu6.log' } ]
-         */
+         **/
     });
 
     client.listMethods(function (err,result) {

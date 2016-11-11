@@ -1,11 +1,13 @@
 
 # crawler_api
 
-## [api/xmly/topn](#xmly_topn)
+## [api/*/topn](#xmly_topn)
 
-<p id="xmly_topn">告知爬虫爬取喜马拉雅网站的topn</p>
+**其中*代表(xmly\kl\qt\)
 
-api/xmly/topn
+<p id="*_topn">告知爬虫爬取喜马拉雅网站的topn</p>
+
+api/*/topn
 
 控制爬虫爬取喜马拉雅一个专辑内的topn与获取当前状态信息
 
@@ -27,6 +29,7 @@ GET
 
 **JSON示例**
 
+*正在执行示例*
 ```javascript
 {
     name:'xmly_topn',
@@ -37,6 +40,20 @@ GET
     now:1200361812,
     state:20,
     statename:'RUNNING'
+}
+```
+
+*停止执行示例*
+```javascript
+{
+  "description": "Not started",
+  "stop": 0,
+  "exitstatus": 0,
+  "now": 1478700847,
+  "name": "xmly_topn",
+  "statename": "STOPPED",
+  "start": 0,
+  "state": 0
 }
 ```
 
@@ -51,6 +68,61 @@ POST
 | 参数名 | 类型及范围 | 说明|
 | --- | ---| ---|
 | topn_n | int(1~100) | topn_n n的数目, 爬虫目前设计只支持 1 ~ 100 的爬取|
-| urls | list | xmly 需要爬取栏目的url列表,如果为空,则全部爬取|
+| urls | array | xmly 需要爬取栏目的url列表,如果为空,则全部爬取|
 
+#### 返回结果
 
+**JSON示例**
+
+*成功调用**
+
+```javascript
+{
+  "description": "",
+  "stop": 1478701548,
+  "exitstatus": 0,
+  "now": 1478701591,
+  "name": "qt",
+  "statename": "STARTING",
+  "start": 1478701591,
+  "state": 10,
+  "status":"success"
+}
+```
+
+*失败调用*
+
+```javascript
+{
+    status:"fail",
+    reason:"stillrunning"
+    // or
+    // reason:"Please start latter"
+}
+```
+
+### 停止服务器的xmly topn 的爬取
+
+#### http请求方式
+
+DELETE
+
+#### 返回结果
+
+**JSON示例**
+
+*成功调用*
+
+```javascript
+{
+    status:"success"
+}
+```
+
+*失败调用
+
+```javascript
+{
+    status:"not_running"
+}
+```
