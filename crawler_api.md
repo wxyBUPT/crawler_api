@@ -1,9 +1,8 @@
 
 # crawler_api
 
-## [api/*/topn](#xmly_topn)
-
-**其中*代表(xmly\kl\qt\)
+## api/*/topn
+**其中 \* 代表(xmly\kl\qt\)**
 
 <p id="*_topn">告知爬虫爬取喜马拉雅网站的topn</p>
 
@@ -140,7 +139,7 @@ DELETE
 }
 ```
 
-*失败调用
+*失败调用* 
 
 ```javascript
 {
