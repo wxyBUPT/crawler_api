@@ -48,21 +48,35 @@ var stopProcessByName = function (name) {
             var status = "fail";
             var reason = "Not Running";
             if(result.state == 20){
-                rpc.stopProcess(name,true, function (err,stopstatus) {
 
-                    rpc.getProcessInfo(name, function (err,result) {
-                        result.status = "success";
-                        result.reason = "Stop success";
-                        result.stoped = stopstatus;
-                        delete result.logfile;
-                        delete result.stderr_logfile;
-                        delete result.group;
-                        delete result.stdout_logfile;
-                        delete result.pid;
-                        delete result.spawnerr;
+                // 下面是发送 SIGINT 信号
+                // 进程不会强行结束,会保存报表数据
+                if(req.body.sigint ){
+                    console.log("Ctrl-C");
+                    rpc.signalProcess(name,'2', function (err,result) {
                         res.jsonp(result);
                     });
-                });
+                }
+                else {
+                    // 下面是强行终止
+                    // 相当于kill -9
+                    rpc.stopProcess(name, true, function (err, stopstatus) {
+
+                        rpc.getProcessInfo(name, function (err, result) {
+                            result.status = "success";
+                            result.reason = "Stop success";
+                            result.stoped = stopstatus;
+                            delete result.logfile;
+                            delete result.stderr_logfile;
+                            delete result.group;
+                            delete result.stdout_logfile;
+                            delete result.pid;
+                            delete result.spawnerr;
+                            res.jsonp(result);
+                            return;
+                        });
+                    });
+                }
             }else {
                 result.status = status;
                 result.reason = reason;
