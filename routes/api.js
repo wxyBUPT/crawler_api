@@ -228,24 +228,28 @@ router.route('/qt/topn')
                         reason: "stillrunning"
                     };
                     res.jsonp(tmp);
+                    return;
                 }
                 var topn_n = req.body.topn_n;
                 if (!topn_n) {
                     var err = new Error("Body must contains topn_n parm");
                     next(err);
+                    return;
                 }
-                rpc.startProcess(conf.supervisor.qt_topn, true, function (err, result) {
-                    rpc.getProcessInfo(conf.supervisor.qt_topn, function (err, result) {
-                        result.name = "xmly_topn";
-                        delete result.logfile;
-                        delete result.stderr_logfile;
-                        delete result.group;
-                        delete result.stdout_logfile;
-                        delete result.pid;
-                        delete result.spawnerr;
-                        res.jsonp(result);
+                else {
+                    rpc.startProcess(conf.supervisor.qt_topn, true, function (err, result) {
+                        rpc.getProcessInfo(conf.supervisor.qt_topn, function (err, result) {
+                            result.name = "xmly_topn";
+                            delete result.logfile;
+                            delete result.stderr_logfile;
+                            delete result.group;
+                            delete result.stdout_logfile;
+                            delete result.pid;
+                            delete result.spawnerr;
+                            res.jsonp(result);
+                        });
                     });
-                });
+                }
             });
         }
     )
