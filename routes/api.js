@@ -164,7 +164,7 @@ router.route('/xmly/topn')
     )
     .post(
         function (req,res,next) {
-            rpc.getProcessInfo(name, function (err,result) {
+            rpc.getProcessInfo(conf.supervisor.xmly_topn, function (err,result) {
                 // 如果当前进程正在执行
                 if (result.state == 20) {
                     var tmp = {
@@ -220,7 +220,7 @@ router.route('/qt/topn')
     .get(getProcessStatusByName(conf.supervisor.qt_topn))
     .post(
         function (req,res,next) {
-            rpc.getProcessInfo(name, function (err,result) {
+            rpc.getProcessInfo(conf.supervisor.qt_topn, function (err,result) {
                 // 如果当前进程正在执行
                 if (result.state == 20) {
                     var tmp = {
