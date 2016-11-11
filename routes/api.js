@@ -180,7 +180,7 @@ router.route('/xmly/topn')
             var s = '_' + dNow.getFullYear() + dNow.getMonth() +  + dNow.getDate() +  dNow.getHours() +  dNow.getMinutes();
             rds.set(conf.xmly.topn_table,'xmly_top' + top_n +   s);
             rpc.startProcess(conf.supervisor.xmly_topn,true, function (err,result) {
-                rpc.getProcessInfo('xmly_topn', function (err,result){
+                rpc.getProcessInfo(conf.supervisor.xmly_topn, function (err,result){
                     result.name = "xmly_topn";
                     delete result.logfile;
                     delete result.stderr_logfile;
@@ -209,7 +209,25 @@ router.route('/kl/topn')
 router.route('/qt/topn')
     .get(getProcessStatusByName(conf.supervisor.qt_topn))
     .post(
-        startTopnProcessByName(conf.supervisor.qt_topn)
+        function (req,res,next) {
+            var topn_n = req.body.ton_n;
+            if(!topn_n){
+                var err = new Error("Body must contains topn_n parm");
+                next(err);
+            }
+            rpc.startProcess(conf.supervisor.qt_topn,true, function (err,result) {
+                rpc.getProcessInfo(conf.supervisor.qt_topn, function (err,result){
+                    result.name = "xmly_topn";
+                    delete result.logfile;
+                    delete result.stderr_logfile;
+                    delete result.group;
+                    delete result.stdout_logfile;
+                    delete result.pid;
+                    delete result.spawnerr;
+                    res.jsonp(result);
+                });
+            });
+        }
     )
     .delete(
         stopProcessByName(conf.supervisor.qt_topn)
