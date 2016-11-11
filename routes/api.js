@@ -194,7 +194,7 @@ router.route('/xmly/topn')
         }
     )
     .delete(
-        startProcessByName(conf.supervisor.xmly_topn)
+        stopProcessByName(conf.supervisor.xmly_topn)
     );
 
 router.route('/kl/topn')
@@ -210,7 +210,7 @@ router.route('/qt/topn')
     .get(getProcessStatusByName(conf.supervisor.qt_topn))
     .post(
         function (req,res,next) {
-            var topn_n = req.body.ton_n;
+            var topn_n = req.body.topn_n;
             if(!topn_n){
                 var err = new Error("Body must contains topn_n parm");
                 next(err);
