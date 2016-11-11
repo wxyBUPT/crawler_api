@@ -43,7 +43,7 @@ GET
 }
 ```
 
-*停止执行示例*
+*爬虫进程停止执行示例*
 ```javascript
 {
   "description": "Not started",
@@ -63,12 +63,20 @@ GET
 
 POST
 
-#### 请求参数
+#### 请求参数(application/json)
 
 | 参数名 | 类型及范围 | 说明|
 | --- | ---| ---|
 | topn_n | int(1~100) | topn_n n的数目, 爬虫目前设计只支持 1 ~ 100 的爬取|
 | urls | array | xmly 需要爬取栏目的url列表,如果为空,则全部爬取|
+
+*示例*
+```javascript
+{
+	"topn_n":10,
+	"urls":[]
+}
+```
 
 #### 返回结果
 
@@ -79,14 +87,14 @@ POST
 ```javascript
 {
   "description": "",
-  "stop": 1478701548,
+  "stop": 0,
   "exitstatus": 0,
-  "now": 1478701591,
+  "now": 1478868034,
   "name": "qt",
   "statename": "STARTING",
-  "start": 1478701591,
+  "start": 1478868034,
   "state": 10,
-  "status":"success"
+  "status": "success"
 }
 ```
 
@@ -109,7 +117,20 @@ DELETE
 
 #### 返回结果
 
-**JSON示例**
+#### 请求参数(application/json)
+
+只有一个可选参数 sigint,如果为true,则向进程发送sigint信号,建议使用此种方式调用,进程会保存报表信息,如果无参数则效果等同于 kill -9
+使用sigint 参数返回值都为true
+
+*示例*
+```javascript
+{
+	"sigint":true
+}
+```
+
+
+**kill -9返回值JSON示例**
 
 *成功调用*
 
